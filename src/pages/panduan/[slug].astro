@@ -5,6 +5,7 @@ import Article from '../../layouts/Article.astro';
 import GuideCard from '../../components/GuideCard.astro';
 import PromoCard from '../../components/PromoCard.astro';
 import { formatDate, isoDate } from '../../lib/date';
+import { OG_IMAGE, ORG, ORG_REF, SITE_URL } from '../../config';
 
 export const getStaticPaths = (async () => {
   const guides = await getCollection('panduan');
@@ -15,17 +16,31 @@ const { guide } = Astro.props;
 const { Content } = await render(guide);
 const related = await getEntries(guide.data.related);
 const url = new URL(`/panduan/${guide.id}/`, Astro.site).href;
-const org = { '@type': 'Organization', name: 'Workelana' };
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: guide.data.title,
-  datePublished: isoDate(guide.data.published),
-  dateModified: isoDate(guide.data.updated),
-  inLanguage: 'id',
-  author: org,
-  publisher: org,
-  mainEntityOfPage: url,
+  '@graph': [
+    ORG,
+    {
+      '@type': 'Article',
+      headline: guide.data.title,
+      description: guide.data.description,
+      image: new URL(OG_IMAGE, Astro.site).href,
+      datePublished: isoDate(guide.data.published),
+      dateModified: isoDate(guide.data.updated),
+      inLanguage: 'id',
+      author: ORG_REF,
+      publisher: ORG_REF,
+      mainEntityOfPage: url,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Beranda', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Panduan', item: `${SITE_URL}panduan/` },
+        { '@type': 'ListItem', position: 3, name: guide.data.title, item: url },
+      ],
+    },
+  ],
 };
 ---
 <Article

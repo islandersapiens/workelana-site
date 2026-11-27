@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Halaman tidak ditemukan | Workelana"
+  description="Halaman yang kamu cari tidak ada atau sudah dipindah. Kembali ke beranda Workelana atau buka kumpulan panduan kerja remote."
+  noindex
+>
+  <div class="page-head" slot="band">
+    <h1>Halaman tidak ditemukan</h1>
+    <p class="lead">Halaman ini tidak ada atau sudah dipindah.</p>
+  </div>
+  <div class="band-sun" slot="band-art" aria-hidden="true"></div>
+
+  <section class="sec">
+    <div class="wrap">
+      <p><a class="btn" href="/">Kembali ke beranda</a> <a href="/panduan/">Lihat semua panduan</a></p>
+    </div>
+  </section>
+</Base>

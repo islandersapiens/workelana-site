@@ -9,3 +9,16 @@ export const PHOTOS: readonly string[] = []; // contoh: ["/foto/kafe.jpg"] di fo
 export const JOIN_URL = FORM_URL || DISCORD_URL;
 export const CONTACT_URL = EMAIL ? `mailto:${EMAIL}` : DISCORD_URL;
 export const SITE_NAME = 'Workelana';
+export const SITE_URL = 'https://workelana.com/';
+export const OG_IMAGE = '/images/og.png';
+
+/** Shared schema.org publisher, referenced by @id from every page. */
+export const ORG = {
+  '@type': 'Organization',
+  '@id': `${SITE_URL}#org`,
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: { '@type': 'ImageObject', url: `${SITE_URL}images/logo.png`, width: 620, height: 152 },
+  sameAs: [DISCORD_URL],
+};
+export const ORG_REF = { '@id': ORG['@id'] };

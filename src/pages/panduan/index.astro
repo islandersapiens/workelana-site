@@ -4,19 +4,35 @@ import Base from '../../layouts/Base.astro';
 import GuideCard from '../../components/GuideCard.astro';
 import PromoCard from '../../components/PromoCard.astro';
 import { isoDate } from '../../lib/date';
+import { ORG, ORG_REF, SITE_URL } from '../../config';
 
 const guides = (await getCollection('panduan')).sort((a, b) => a.data.order - b.data.order);
 const updated = new Date(Math.max(...guides.map((g) => g.data.updated.getTime())));
-const org = { '@type': 'Organization', name: 'Workelana' };
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  headline: 'Panduan Workelana',
-  dateModified: isoDate(updated),
-  inLanguage: 'id',
-  author: org,
-  publisher: org,
-  mainEntityOfPage: new URL('/panduan/', Astro.site).href,
+  '@graph': [
+    ORG,
+    {
+      '@type': 'CollectionPage',
+      headline: 'Panduan Workelana',
+      dateModified: isoDate(updated),
+      inLanguage: 'id',
+      author: ORG_REF,
+      publisher: ORG_REF,
+      mainEntityOfPage: new URL('/panduan/', Astro.site).href,
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: guides.map((g, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/panduan/${g.id}/`, Astro.site).href, name: g.data.title })),
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Beranda', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: 'Panduan', item: `${SITE_URL}panduan/` },
+      ],
+    },
+  ],
 };
 ---
 <Base

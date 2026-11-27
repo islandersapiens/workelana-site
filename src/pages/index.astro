@@ -9,8 +9,23 @@ import Rules from '../components/home/Rules.astro';
 import GuidePreview from '../components/home/GuidePreview.astro';
 import Faq from '../components/home/Faq.astro';
 import ShareBand from '../components/home/ShareBand.astro';
+import { faqs } from '../data/home';
+import { ORG, ORG_REF, SITE_NAME, SITE_URL } from '../config';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    ORG,
+    { '@type': 'WebSite', '@id': `${SITE_URL}#website`, name: SITE_NAME, url: SITE_URL, inLanguage: 'id', publisher: ORG_REF },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
+};
 ---
 <Base
+  jsonLd={jsonLd}
   title="Loker Remote Indonesia & AI Annotation | Komunitas Workelana"
   description="Komunitas gratis untuk cari kerja remote dari Indonesia: loker remote, AI annotation, tips lolos tes, dan review platform. Gabung Discord Workelana."
   ogDescription="Loker remote, tips lolos tes, dan review platform dari sesama pencari kerja Indonesia. Gratis."

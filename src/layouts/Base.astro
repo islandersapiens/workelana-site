@@ -3,7 +3,7 @@ import '../styles/global.css';
 import fontLatin from '../assets/fonts/jakarta-latin.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { JOIN_URL, SITE_NAME } from '../config';
+import { JOIN_URL, OG_IMAGE, SITE_NAME } from '../config';
 
 interface Props {
   title: string;
@@ -13,10 +13,13 @@ interface Props {
   jsonLd?: Record<string, unknown> | undefined;
   /** Show the fixed "Gabung" bar on small screens. */
   stickyJoin?: boolean;
+  /** Keep the page out of search results (e.g. 404). */
+  noindex?: boolean;
 }
 
-const { title, description, ogDescription = description, ogType = 'website', jsonLd, stickyJoin = false } = Astro.props;
+const { title, description, ogDescription = description, ogType = 'website', jsonLd, stickyJoin = false, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(OG_IMAGE, Astro.site).href;
 // Escape "<" so content can never close the JSON-LD script element.
 const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
@@ -27,13 +30,21 @@ const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{title}</title>
   <meta name="description" content={description}>
-  <link rel="canonical" href={canonical}>
+  {noindex
+    ? <meta name="robots" content="noindex">
+    : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">}
+  {!noindex && <link rel="canonical" href={canonical}>}
   <meta property="og:type" content={ogType}>
   <meta property="og:locale" content="id_ID">
   <meta property="og:site_name" content={SITE_NAME}>
   <meta property="og:title" content={title}>
   <meta property="og:description" content={ogDescription}>
   <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={ogImage}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo Workelana">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#130D4F">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" href="/images/favicon-192.png" sizes="192x192">

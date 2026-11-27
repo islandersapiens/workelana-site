@@ -49,10 +49,16 @@ for (const file of pages) {
     if (!resolves(url)) fail(`broken link ${url}`);
   }
 
-  // Basic SEO
+  // Basic SEO (noindex pages like 404 carry no canonical)
+  const noindex = /<meta name="robots" content="noindex"/.test(html);
   if ((html.match(/<h1\b/g) ?? []).length !== 1) fail('needs exactly one <h1>');
-  for (const re of [/<title>[^<]{10,}<\/title>/, /<meta name="description" content="[^"]{50,}"/, /<link rel="canonical" href="https:\/\/workelana\.com\//]) {
+  const required = [/<title>[^<]{10,}<\/title>/, /<meta name="description" content="[^"]{50,}"/, /<meta property="og:image" content="https:\/\/workelana\.com\//];
+  if (!noindex) required.push(/<link rel="canonical" href="https:\/\/workelana\.com\//);
+  for (const re of required) {
     if (!re.test(html)) fail(`missing ${re.source}`);
+  }
+  for (const [, ld] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    try { JSON.parse(ld); } catch { fail('invalid JSON-LD'); }
   }
 }
 
