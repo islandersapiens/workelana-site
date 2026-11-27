@@ -52,4 +52,4 @@ npm run build    # type-check, build to dist/, then run the security checks
 
 ## License
 
-© 2026 Mohamad Fauzi. All rights reserved. This code is public for viewing only; see [LICENSE](LICENSE).
+© 2026 Mohamad Fauzi and Tomi Mulhartono. All rights reserved. This code is public for viewing only; see [LICENSE](LICENSE).
