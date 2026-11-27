@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  seoTitle: string;
+  description: string;
+  meta: string;
+  crumb?: { href: string; label: string } | undefined;
+  jsonLd?: Record<string, unknown> | undefined;
+}
+
+const { title, seoTitle, description, meta, crumb, jsonLd } = Astro.props;
+---
+<Base title={`${seoTitle} | Workelana`} description={description} ogType={jsonLd ? 'article' : 'website'} jsonLd={jsonLd}>
+  <div class="page-head narrow" slot="band">
+    {crumb && <a class="crumb" href={crumb.href}>{crumb.label}</a>}
+    <h1>{title}</h1>
+    <p class="meta">{meta}</p>
+  </div>
+  <div class="band-sun" slot="band-art" aria-hidden="true"></div>
+
+  <div class="wrap narrow">
+    <article class="prose"><slot /></article>
+    <div class="article-end"><slot name="end" /></div>
+  </div>
+</Base>

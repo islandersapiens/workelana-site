@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { JOIN_URL } from '../../config';
+import { isoDate } from '../../lib/date';
+
+const guides = (await getCollection('panduan')).sort((a, b) => a.data.order - b.data.order);
+const updated = new Date(Math.max(...guides.map((g) => g.data.updated.getTime())));
+const org = { '@type': 'Organization', name: 'Workelana' };
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  headline: 'Panduan Workelana',
+  dateModified: isoDate(updated),
+  inLanguage: 'id',
+  author: org,
+  publisher: org,
+  mainEntityOfPage: new URL('/panduan/', Astro.site).href,
+};
+---
+<Base
+  title="Panduan Kerja Remote, AI Annotation, Freelance & Nomad | Workelana"
+  description="Kumpulan panduan Workelana: kerja remote, AI annotation, freelance, digital nomad, WFC, pembayaran dolar, dan menghindari lowongan palsu."
+  jsonLd={jsonLd}
+>
+  <div class="page-head" slot="band">
+    <h1>Panduan Workelana</h1>
+    <p class="lead">Kumpulan panduan untuk pencari kerja remote, pekerja freelance, AI annotator, dan digital nomad di Indonesia.</p>
+  </div>
+  <div class="band-sun" slot="band-art" aria-hidden="true"></div>
+
+  <section class="sec" aria-label="Daftar panduan">
+    <div class="wrap">
+      <ul class="cards">
+        {guides.map((g) => (
+          <li><a class="guide-card" href={`/panduan/${g.id}/`}><h2>{g.data.title}</h2><p>{g.data.summary}</p><span>Baca panduan</span></a></li>
+        ))}
+      </ul>
+      <div class="promo after">
+        <h2>Gabung komunitasnya</h2>
+        <p>Loker remote, tips, dan diskusi sesama pencari kerja Indonesia. Gratis.</p>
+        <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
+      </div>
+    </div>
+  </section>
+</Base>

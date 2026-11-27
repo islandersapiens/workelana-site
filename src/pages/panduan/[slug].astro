@@ -1,0 +1,56 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, getEntries, render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { JOIN_URL } from '../../config';
+import { formatDate, isoDate } from '../../lib/date';
+
+export const getStaticPaths = (async () => {
+  const guides = await getCollection('panduan');
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}) satisfies GetStaticPaths;
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+const related = await getEntries(guide.data.related);
+const url = new URL(`/panduan/${guide.id}/`, Astro.site).href;
+const org = { '@type': 'Organization', name: 'Workelana' };
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: guide.data.title,
+  datePublished: isoDate(guide.data.published),
+  dateModified: isoDate(guide.data.updated),
+  inLanguage: 'id',
+  author: org,
+  publisher: org,
+  mainEntityOfPage: url,
+};
+---
+<Article
+  title={guide.data.title}
+  seoTitle={guide.data.seoTitle}
+  description={guide.data.description}
+  meta={`Diperbarui ${formatDate(guide.data.updated)} oleh Tim Workelana`}
+  crumb={{ href: '/panduan/', label: 'Semua panduan' }}
+  jsonLd={jsonLd}
+>
+  <Content />
+  <Fragment slot="end">
+    <div class="promo">
+      <h2>{guide.data.cta.title}</h2>
+      <p>{guide.data.cta.text}</p>
+      <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
+    </div>
+    {related.length > 0 && (
+      <section aria-labelledby="related-h">
+        <h2 id="related-h">Baca juga</h2>
+        <ul class="cards">
+          {related.map((r) => (
+            <li><a class="guide-card" href={`/panduan/${r.id}/`}><h3>{r.data.title}</h3><p>{r.data.summary}</p><span>Baca panduan</span></a></li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </Fragment>
+</Article>

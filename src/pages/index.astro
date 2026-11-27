@@ -1,0 +1,193 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { JOIN_URL, MEMBER_COUNT, PHOTOS } from '../config';
+
+type Tone = 'sun' | 'teal' | 'navy';
+
+const channels = [
+  { cat: 'Start', items: ['kenalan-yuk'] },
+  { cat: 'Pintu Rezeki', items: ['katalog-loker-remote', 'lapak-gigs-fiverr-upwork-etc', 'berbagi-loker-umum'] },
+  { cat: 'Review Platform Remote', items: ['awas-penipuan', 'review-jujur-platform'] },
+  { cat: 'Ngopi dan Ngantor', items: ['spot-wfc-favorit'] },
+];
+
+const jobs = [
+  { company: 'Mercor', role: 'Generalist Expert', rate: '$40–$70', text: 'Detail lengkap dan link lamaran ada di Discord.' },
+  { company: 'Mercor', role: 'Language & Audio Expert', rate: '$35–$50', text: 'Menulis prompt dan jawaban referensi, menilai terjemahan atau kualitas audio. Ada AI interview sekitar 20 menit.' },
+];
+
+// Icon paths are 24x24, stroke-based.
+const categories: { name: string; text: string; tone: Tone; channels: string[]; icon: string }[] = [
+  { name: 'Pintu Rezeki', tone: 'sun', text: 'Loker remote tiap hari: AI annotation, bahasa Indonesia, expert, dan gig Fiverr atau Upwork.', channels: ['katalog-loker-remote', 'berbagi-loker-umum'], icon: '<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' },
+  { name: 'Review Platform Remote', tone: 'teal', text: 'Review jujur dari yang sudah coba, plus channel khusus untuk loker yang mencurigakan.', channels: ['awas-penipuan', 'review-jujur-platform'], icon: '<path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>' },
+  { name: 'Workelana University', tone: 'navy', text: 'Latihan interview bareng, review CV, dan belajar skill baru.', channels: ['latihan-interview', 'cv-yang-dilirik-recruiter'], icon: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>' },
+  { name: 'Ngopi dan Ngantor', tone: 'sun', text: 'Spot WFC favorit dan perlengkapan nomad, dari anggota untuk anggota.', channels: ['spot-wfc-favorit'], icon: '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/>' },
+  { name: 'Ruang Santai', tone: 'teal', text: 'Ngobrol bebas. Kadang bahas kerja, kadang tidak.', channels: ['community-chat'], icon: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>' },
+  { name: 'Kenalan dulu', tone: 'navy', text: 'Sapa anggota lain dan ceritakan bidangmu di channel pembuka.', channels: ['kenalan-yuk'], icon: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>' },
+];
+
+const steps = [
+  { title: 'Klik Gabung Discord gratis', text: 'Kamu langsung diarahkan ke server Discord Workelana. Belum punya akun Discord? Buat gratis di sana.' },
+  { title: 'Pilih role bidangmu', text: 'Channel loker yang cocok langsung muncul.' },
+  { title: 'Sapa kami', text: 'Mampir ke #kenalan-yuk, lalu mulai baca atau berbagi loker.' },
+];
+
+const rules = [
+  'Saling jaga. Bertanya boleh, merendahkan jangan.',
+  'Jangan spam atau jualan di luar channel lapak.',
+  'Jangan bagikan soal tes atau materi rahasia platform.',
+  'Nemu loker mencurigakan? Taruh di #awas-penipuan supaya yang lain ikut waspada.',
+];
+
+const faqs = [
+  ['Ada kerja remote untuk fresh graduate?', 'Ada, tapi tidak semua loker cocok. Mulai dari bidang yang kamu kuasai, baca syarat tiap loker, dan tanya anggota lain yang sudah pernah mencoba.'],
+  ['Apa itu AI annotation?', 'Pekerjaan memberi label, menilai, atau mengevaluasi data dan jawaban AI supaya modelnya belajar lebih baik, misalnya menilai terjemahan, audio, atau video.'],
+  ['Apakah kerja remote dari Indonesia dibayar dalam dolar?', 'Banyak loker dari platform luar negeri membayar dalam dolar AS, tapi tiap platform berbeda. Kisaran bayaran biasanya tertera di loker, jadi cek dulu sebelum melamar.'],
+  ['Gratis?', 'Ya. Gabung dan baca semua loker dasar gratis.'],
+  ['Perlu pengalaman?', 'Tidak wajib. Ada loker untuk pemula maupun yang sudah jago, dan kamu bisa tanya langsung ke sesama anggota.'],
+  ['Ada link referral?', 'Ada. Sebagian link dari admin adalah link referral. Kalau kamu diterima, Workelana dapat bonus kecil, tanpa biaya tambahan untukmu. Selalu kami beri tanda.'],
+] as const;
+
+const guides = (await getCollection('panduan')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const icoClass = (tone: Tone) => (tone === 'navy' ? 'ico' : `ico ico-${tone}`);
+---
+<Base
+  title="Loker Remote Indonesia & AI Annotation | Komunitas Workelana"
+  description="Komunitas gratis untuk cari kerja remote dari Indonesia: loker remote, AI annotation, tips lolos tes, dan review platform. Gabung Discord Workelana."
+  ogDescription="Loker remote, tips lolos tes, dan review platform dari sesama pencari kerja Indonesia. Gratis."
+  stickyJoin
+>
+  <div class="hero" slot="band">
+    <div class="hero-copy">
+      <h1>Kerja dari mana aja, lokernya dari sini.</h1>
+      <p class="lead">Komunitas Discord gratis tempat orang Indonesia saling berbagi loker kerja remote, tips lolos tes, dan pengalaman asli dari sesama pencari kerja.</p>
+      <div class="cta-row">
+        <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
+        <a class="link" href="#loker">Intip lokernya</a>
+      </div>
+      <p class="note">Tanpa daftar di web, tanpa biaya. Cukup akun Discord, yang bisa dibuat gratis.</p>
+      {MEMBER_COUNT && <p class="members">{MEMBER_COUNT}</p>}
+    </div>
+    <div class="stage">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="dc" role="img" aria-label="Daftar channel di server Discord Workelana">
+        <div class="dc-head"><img src="/assets/favicon-192.png" alt="" width="22" height="22">Workelana</div>
+        {channels.map(({ cat, items }) => (
+          <>
+            <span class="dc-cat">{cat}</span>
+            <ul>{items.map((c) => <li class={c === 'katalog-loker-remote' ? 'on' : undefined}>{c}</li>)}</ul>
+          </>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <section class="sec" id="loker" aria-labelledby="loker-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="loker-h">Contoh loker yang dibagikan di komunitas</h2>
+        <p>Setiap loker datang dengan kisaran bayarannya, jadi kamu tahu nilainya sebelum melamar.</p>
+      </div>
+      <div class="tickets">
+        {jobs.map((j) => (
+          <article class="ticket">
+            <div class="t-main">
+              <div class="t-top"><span class="t-co">{j.company}</span><span class="chip">Remote</span><span class="chip">Part-time</span></div>
+              <h3>{j.role}</h3>
+              <p>{j.text}</p>
+            </div>
+            <div class="t-stub">
+              <div><div class="t-label">Bayaran per jam</div><div class="t-rate">{j.rate}</div></div>
+              <a href={JOIN_URL}>Lihat di Discord</a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="fine">Contoh dari channel #katalog-loker-remote. Loker cepat berubah, jadi cek tanggal posting di Discord.</p>
+    </div>
+  </section>
+
+  {PHOTOS.length > 0 && (
+    <section class="sec" aria-labelledby="foto-h">
+      <div class="wrap">
+        <div class="head"><h2 id="foto-h">Dari tongkrongan kami</h2></div>
+        <div class="gallery">{PHOTOS.map((src) => <img src={src} alt="Suasana kerja anggota Workelana" loading="lazy">)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="sec sec-alt" aria-labelledby="isi-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="isi-h">Isi servernya</h2>
+        <p>Loker remote, tips, review platform, dan tempat ngobrol buat yang kerja dari laptop.</p>
+      </div>
+      <ul class="cards">
+        {categories.map((c) => (
+          <li class="cat">
+            <span class={icoClass(c.tone)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={c.icon} /></span>
+            <h3>{c.name}</h3>
+            <p>{c.text}</p>
+            <ul class="chans">{c.channels.map((ch) => <li>#{ch}</li>)}</ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="masuk-h">
+    <div class="wrap">
+      <div class="head"><h2 id="masuk-h">Cara masuk</h2><p>Tiga langkah, kurang dari dua menit.</p></div>
+      <ol class="steps">{steps.map((s) => <li><strong>{s.title}</strong><span>{s.text}</span></li>)}</ol>
+      <p class="after"><a class="btn" href={JOIN_URL}>Gabung Discord gratis</a></p>
+    </div>
+  </section>
+
+  <section class="sec sec-alt" aria-labelledby="aturan-h">
+    <div class="wrap duo">
+      <div>
+        <div class="head"><h2 id="aturan-h">Aturan main</h2></div>
+        <ul class="rules">{rules.map((r) => <li>{r}</li>)}</ul>
+      </div>
+      <div class="promo">
+        <h3>Baru mulai cari kerja remote?</h3>
+        <p>Baca dulu panduannya: jenis kerja remote, bidang yang populer, dan cara mulai dari Indonesia.</p>
+        <a class="link" href="/panduan/kerja-remote-indonesia/">Baca panduan kerja remote</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="panduan-h">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="panduan-h">Panduan dari komunitas</h2>
+        <p>Ringkasan yang sering ditanyakan anggota, dari cara mulai sampai cara menghindari penipuan.</p>
+      </div>
+      <ul class="cards">
+        {guides.map((g) => (
+          <li><a class="guide-card" href={`/panduan/${g.id}/`}><h3>{g.data.title}</h3><p>{g.data.summary}</p><span>Baca panduan</span></a></li>
+        ))}
+      </ul>
+      <p class="after"><a class="link" href="/panduan/">Lihat semua panduan</a></p>
+    </div>
+  </section>
+
+  <section class="sec sec-alt" aria-labelledby="faq-h">
+    <div class="wrap">
+      <div class="faq">
+        <div class="head"><h2 id="faq-h">Pertanyaan yang sering muncul</h2></div>
+        {faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band share" aria-labelledby="share-h">
+    <div class="wrap">
+      <h2 id="share-h">Nemu loker bagus? Bagikan.</h2>
+      <p>Server ini hidup karena anggotanya saling berbagi. Satu loker dari kamu bisa jadi kesempatan buat orang lain.</p>
+      <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
+      <div class="horizon" aria-hidden="true"></div>
+    </div>
+  </section>
+</Base>
