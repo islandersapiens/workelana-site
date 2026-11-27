@@ -1,0 +1,28 @@
+---
+import { JOIN_URL, MEMBER_COUNT } from '../../config';
+import { heroChannels, activeChannel } from '../../data/home';
+---
+<div class="hero">
+  <div class="hero-copy">
+    <h1>Kerja dari mana aja, lokernya dari sini.</h1>
+    <p class="lead">Komunitas Discord gratis tempat orang Indonesia saling berbagi loker kerja remote, tips lolos tes, dan pengalaman asli dari sesama pencari kerja.</p>
+    <div class="cta-row">
+      <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
+      <a class="link" href="#loker">Intip lokernya</a>
+    </div>
+    <p class="note">Tanpa daftar di web, tanpa biaya. Cukup akun Discord, yang bisa dibuat gratis.</p>
+    {MEMBER_COUNT && <p class="members">{MEMBER_COUNT}</p>}
+  </div>
+  <div class="stage">
+    <div class="sun" aria-hidden="true"></div>
+    <div class="dc" role="img" aria-label="Daftar channel di server Discord Workelana">
+      <div class="dc-head"><img src="/images/favicon-192.png" alt="" width="22" height="22">Workelana</div>
+      {heroChannels.map(({ category, channels }) => (
+        <>
+          <span class="dc-cat">{category}</span>
+          <ul>{channels.map((c) => <li class={c === activeChannel ? 'on' : undefined}>{c}</li>)}</ul>
+        </>
+      ))}
+    </div>
+  </div>
+</div>

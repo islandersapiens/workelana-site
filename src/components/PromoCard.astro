@@ -1,0 +1,17 @@
+---
+import { JOIN_URL } from '../config';
+
+interface Props {
+  title: string;
+  text: string;
+  as?: 'h2' | 'h3';
+  class?: string;
+}
+
+const { title, text, as: Heading = 'h2', class: extra } = Astro.props;
+---
+<div class:list={['promo', extra]}>
+  <Heading>{title}</Heading>
+  <p>{text}</p>
+  <slot><a class="btn" href={JOIN_URL}>Gabung Discord gratis</a></slot>
+</div>

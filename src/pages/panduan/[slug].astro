@@ -2,7 +2,8 @@
 import type { GetStaticPaths } from 'astro';
 import { getCollection, getEntries, render } from 'astro:content';
 import Article from '../../layouts/Article.astro';
-import { JOIN_URL } from '../../config';
+import GuideCard from '../../components/GuideCard.astro';
+import PromoCard from '../../components/PromoCard.astro';
 import { formatDate, isoDate } from '../../lib/date';
 
 export const getStaticPaths = (async () => {
@@ -37,17 +38,13 @@ const jsonLd = {
 >
   <Content />
   <Fragment slot="end">
-    <div class="promo">
-      <h2>{guide.data.cta.title}</h2>
-      <p>{guide.data.cta.text}</p>
-      <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
-    </div>
+    <PromoCard title={guide.data.cta.title} text={guide.data.cta.text} />
     {related.length > 0 && (
       <section aria-labelledby="related-h">
         <h2 id="related-h">Baca juga</h2>
         <ul class="cards">
           {related.map((r) => (
-            <li><a class="guide-card" href={`/panduan/${r.id}/`}><h3>{r.data.title}</h3><p>{r.data.summary}</p><span>Baca panduan</span></a></li>
+            <li><GuideCard guide={r} /></li>
           ))}
         </ul>
       </section>

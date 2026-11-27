@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { JOIN_URL } from '../../config';
+import GuideCard from '../../components/GuideCard.astro';
+import PromoCard from '../../components/PromoCard.astro';
 import { isoDate } from '../../lib/date';
 
 const guides = (await getCollection('panduan')).sort((a, b) => a.data.order - b.data.order);
@@ -33,14 +34,10 @@ const jsonLd = {
     <div class="wrap">
       <ul class="cards">
         {guides.map((g) => (
-          <li><a class="guide-card" href={`/panduan/${g.id}/`}><h2>{g.data.title}</h2><p>{g.data.summary}</p><span>Baca panduan</span></a></li>
+          <li><GuideCard guide={g} as="h2" /></li>
         ))}
       </ul>
-      <div class="promo after">
-        <h2>Gabung komunitasnya</h2>
-        <p>Loker remote, tips, dan diskusi sesama pencari kerja Indonesia. Gratis.</p>
-        <a class="btn" href={JOIN_URL}>Gabung Discord gratis</a>
-      </div>
+      <PromoCard class="after" title="Gabung komunitasnya" text="Loker remote, tips, dan diskusi sesama pencari kerja Indonesia. Gratis." />
     </div>
   </section>
 </Base>

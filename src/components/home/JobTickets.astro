@@ -1,0 +1,28 @@
+---
+import { JOIN_URL } from '../../config';
+import { jobs } from '../../data/home';
+---
+<section class="sec" id="loker" aria-labelledby="loker-h">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="loker-h">Contoh loker yang dibagikan di komunitas</h2>
+      <p>Setiap loker datang dengan kisaran bayarannya, jadi kamu tahu nilainya sebelum melamar.</p>
+    </div>
+    <div class="tickets">
+      {jobs.map((j) => (
+        <article class="ticket">
+          <div class="t-main">
+            <div class="t-top"><span class="t-co">{j.company}</span><span class="chip">Remote</span><span class="chip">Part-time</span></div>
+            <h3>{j.role}</h3>
+            <p>{j.text}</p>
+          </div>
+          <div class="t-stub">
+            <div><div class="t-label">Bayaran per jam</div><div class="t-rate">{j.rate}</div></div>
+            <a href={JOIN_URL}>Lihat di Discord</a>
+          </div>
+        </article>
+      ))}
+    </div>
+    <p class="fine">Contoh dari channel #katalog-loker-remote. Loker cepat berubah, jadi cek tanggal posting di Discord.</p>
+  </div>
+</section>

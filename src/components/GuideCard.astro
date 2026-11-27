@@ -1,0 +1,16 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  guide: CollectionEntry<'panduan'>;
+  /** Heading level that fits the surrounding outline. */
+  as?: 'h2' | 'h3';
+}
+
+const { guide, as: Heading = 'h3' } = Astro.props;
+---
+<a class="guide-card" href={`/panduan/${guide.id}/`}>
+  <Heading>{guide.data.title}</Heading>
+  <p>{guide.data.summary}</p>
+  <span>Baca panduan</span>
+</a>

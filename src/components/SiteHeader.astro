@@ -1,0 +1,14 @@
+---
+import { JOIN_URL } from '../config';
+
+const inGuides = Astro.url.pathname.startsWith('/panduan/');
+---
+<header class="site-header">
+  <a class="logo" href="/" aria-label="Workelana, beranda">
+    <img src="/images/logo.png" alt="Workelana" width="122" height="30">
+  </a>
+  <nav aria-label="Utama">
+    <a href="/panduan/" aria-current={inGuides ? 'page' : undefined}>Panduan</a>
+    <a class="btn" href={JOIN_URL}>Gabung Discord</a>
+  </nav>
+</header>

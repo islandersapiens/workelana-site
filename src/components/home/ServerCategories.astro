@@ -1,0 +1,23 @@
+---
+import { categories, type Tone } from '../../data/home';
+
+const icoClass = (tone: Tone) => (tone === 'navy' ? 'ico' : `ico ico-${tone}`);
+---
+<section class="sec sec-alt" aria-labelledby="isi-h">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="isi-h">Isi servernya</h2>
+      <p>Loker remote, tips, review platform, dan tempat ngobrol buat yang kerja dari laptop.</p>
+    </div>
+    <ul class="cards">
+      {categories.map((c) => (
+        <li class="cat">
+          <span class={icoClass(c.tone)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={c.icon} /></span>
+          <h3>{c.name}</h3>
+          <p>{c.text}</p>
+          <ul class="chans">{c.channels.map((ch) => <li>#{ch}</li>)}</ul>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

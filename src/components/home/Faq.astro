@@ -1,0 +1,11 @@
+---
+import { faqs } from '../../data/home';
+---
+<section class="sec sec-alt" aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="faq">
+      <div class="head"><h2 id="faq-h">Pertanyaan yang sering muncul</h2></div>
+      {faqs.map(({ q, a }) => <details><summary>{q}</summary><p>{a}</p></details>)}
+    </div>
+  </div>
+</section>

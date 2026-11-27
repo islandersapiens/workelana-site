@@ -1,0 +1,15 @@
+---
+import PromoCard from '../PromoCard.astro';
+import { rules } from '../../data/home';
+---
+<section class="sec sec-alt" aria-labelledby="aturan-h">
+  <div class="wrap duo">
+    <div>
+      <div class="head"><h2 id="aturan-h">Aturan main</h2></div>
+      <ul class="rules">{rules.map((r) => <li>{r}</li>)}</ul>
+    </div>
+    <PromoCard as="h3" title="Baru mulai cari kerja remote?" text="Baca dulu panduannya: jenis kerja remote, bidang yang populer, dan cara mulai dari Indonesia.">
+      <a class="link" href="/panduan/kerja-remote-indonesia/">Baca panduan kerja remote</a>
+    </PromoCard>
+  </div>
+</section>

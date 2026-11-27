@@ -1,0 +1,11 @@
+---
+import { JOIN_URL } from '../../config';
+import { steps } from '../../data/home';
+---
+<section class="sec" aria-labelledby="masuk-h">
+  <div class="wrap">
+    <div class="head"><h2 id="masuk-h">Cara masuk</h2><p>Tiga langkah, kurang dari dua menit.</p></div>
+    <ol class="steps">{steps.map((s) => <li><strong>{s.title}</strong><span>{s.text}</span></li>)}</ol>
+    <p class="after"><a class="btn" href={JOIN_URL}>Gabung Discord gratis</a></p>
+  </div>
+</section>

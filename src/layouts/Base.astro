@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
 import fontLatin from '../assets/fonts/jakarta-latin.woff2?url';
-import { JOIN_URL, CONTACT_URL, SITE_NAME } from '../config';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { JOIN_URL, SITE_NAME } from '../config';
 
 interface Props {
   title: string;
@@ -15,7 +17,6 @@ interface Props {
 
 const { title, description, ogDescription = description, ogType = 'website', jsonLd, stickyJoin = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const path = Astro.url.pathname;
 // Escape "<" so content can never close the JSON-LD script element.
 const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
 ---
@@ -35,8 +36,8 @@ const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   <meta property="og:url" content={canonical}>
   <meta name="theme-color" content="#130D4F">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
-  <link rel="icon" type="image/png" href="/assets/favicon-192.png" sizes="192x192">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/favicon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
   <link rel="sitemap" href="/sitemap.xml">
   <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin>
   {ld && <script type="application/ld+json" set:html={ld} />}
@@ -45,15 +46,7 @@ const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
   <a class="skip" href="#main">Langsung ke isi</a>
   <div class="band">
     <div class="wrap">
-      <header class="site-header">
-        <a class="logo" href="/" aria-label="Workelana, beranda">
-          <img src="/assets/logo.png" alt="Workelana" width="122" height="30">
-        </a>
-        <nav aria-label="Utama">
-          <a href="/panduan/" aria-current={path.startsWith('/panduan/') ? 'page' : undefined}>Panduan</a>
-          <a class="btn" href={JOIN_URL}>Gabung Discord</a>
-        </nav>
-      </header>
+      <SiteHeader />
       <slot name="band" />
     </div>
     <slot name="band-art" />
@@ -63,20 +56,7 @@ const ld = jsonLd && JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <slot />
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <p>Sebagian link loker adalah link referral dan selalu diberi tanda. Hasil seleksi ditentukan masing-masing platform. Workelana komunitas independen, bukan mitra resmi platform mana pun yang disebutkan.</p>
-      <p>Komunitas berjalan di Discord, dan kami tidak menjual data anggota ke pihak lain. © {new Date().getFullYear()} Workelana.</p>
-      <nav aria-label="Footer">
-        <ul>
-          <li><a href="/">Beranda</a></li>
-          <li><a href="/panduan/">Semua panduan</a></li>
-          <li><a href="/privasi/">Kebijakan privasi</a></li>
-          <li><a href={CONTACT_URL}>Kontak</a></li>
-        </ul>
-      </nav>
-    </div>
-  </footer>
+  <SiteFooter />
 
   {stickyJoin && <div class="sticky"><a class="btn" href={JOIN_URL}>Gabung Discord gratis</a></div>}
 </body>

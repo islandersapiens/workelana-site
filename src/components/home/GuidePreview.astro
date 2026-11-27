@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+import GuideCard from '../GuideCard.astro';
+
+const guides = (await getCollection('panduan')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+---
+<section class="sec" aria-labelledby="panduan-h">
+  <div class="wrap">
+    <div class="head">
+      <h2 id="panduan-h">Panduan dari komunitas</h2>
+      <p>Ringkasan yang sering ditanyakan anggota, dari cara mulai sampai cara menghindari penipuan.</p>
+    </div>
+    <ul class="cards">{guides.map((g) => <li><GuideCard guide={g} /></li>)}</ul>
+    <p class="after"><a class="link" href="/panduan/">Lihat semua panduan</a></p>
+  </div>
+</section>
